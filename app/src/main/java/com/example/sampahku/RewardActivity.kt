@@ -1,132 +1,139 @@
-package com.example.sampahku;
+package com.example.sampahku
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.graphics.Typeface; // apa perlu ya?
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import java.util.List;
+import android.content.Intent
+import android.graphics.Typeface
+import android.net.Uri
+import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.sampahku.ApiClient.service
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import kotlin.math.min
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.net.Uri; //agar bisa intent implicit
-
-public class RewardActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private ImageView ivBack;
+// apa perlu ya?
+//agar bisa intent implicit
+class RewardActivity : AppCompatActivity(), View.OnClickListener {
+    private var ivBack: ImageView? = null
 
     // list navbar isinya
-    private LinearLayout navHome;
-    private LinearLayout navReward;
-    private LinearLayout navQr;
-    private LinearLayout navStatistik;
-    private LinearLayout navProfil;
+    private var navHome: LinearLayout? = null
+    private var navReward: LinearLayout? = null
+    private var navQr: LinearLayout? = null
+    private var navStatistik: LinearLayout? = null
+    private var navProfil: LinearLayout? = null
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reward);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_reward)
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
+            getSupportActionBar()!!.hide()
         }
 
         // inisialisasi tombol back
         // masih bermasalah sih...
         // NVM.. FIXED!
-        ivBack = findViewById(R.id.iv_back);
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
+        ivBack = findViewById<ImageView>(R.id.iv_back)
+        ivBack!!.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                finish()
             }
-        });
+        })
 
         // inisialisasi bottom navigation bar
-        navHome = findViewById(R.id.nav_home);
-        navReward = findViewById(R.id.nav_reward);
-        navQr = findViewById(R.id.nav_qr);
-        navStatistik = findViewById(R.id.nav_statistik);
-        navProfil = findViewById(R.id.nav_profil);
+        navHome = findViewById<LinearLayout>(R.id.nav_home)
+        navReward = findViewById<LinearLayout>(R.id.nav_reward)
+        navQr = findViewById<LinearLayout>(R.id.nav_qr)
+        navStatistik = findViewById<LinearLayout>(R.id.nav_statistik)
+        navProfil = findViewById<LinearLayout>(R.id.nav_profil)
 
-        navHome.setOnClickListener(this);
-        navReward.setOnClickListener(this);
-        navQr.setOnClickListener(this);
-        navStatistik.setOnClickListener(this);
-        navProfil.setOnClickListener(this);
+        navHome!!.setOnClickListener(this)
+        navReward!!.setOnClickListener(this)
+        navQr!!.setOnClickListener(this)
+        navStatistik!!.setOnClickListener(this)
+        navProfil!!.setOnClickListener(this)
 
         // set data untuk item-item rewardnya
-        setupRewardItems();
-        setActiveNav(); // untuk navbar ganti warna ketika di halaman reward
+        setupRewardItems()
+        setActiveNav() // untuk navbar ganti warna ketika di halaman reward
     }
 
-    @Override
-    public void onClick(View v) {
+    override fun onClick(v: View) {
         if (v.getId() == R.id.nav_home) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-
+            val intent = Intent(this, MainActivity::class.java)
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            startActivity(intent)
         } else if (v.getId() == R.id.nav_reward) {
             // sudah di Reward, jadi ya...
-            Toast.makeText(this, "Reward", Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(this, "Reward", Toast.LENGTH_SHORT).show()
         } else if (v.getId() == R.id.nav_qr) {
-            startActivity(new Intent(RewardActivity.this, QrActivity.class));
-
+            startActivity(Intent(this@RewardActivity, QrActivity::class.java))
         } else if (v.getId() == R.id.nav_statistik) {
-            startActivity(new Intent(RewardActivity.this, StatistikActivity.class));
-
+            startActivity(Intent(this@RewardActivity, StatistikActivity::class.java))
         } else if (v.getId() == R.id.nav_profil) {
-            startActivity(new Intent(RewardActivity.this, ProfilActivity.class));
+            startActivity(Intent(this@RewardActivity, ProfilActivity::class.java))
         }
     }
 
     // ini utk melakukan set data untuk semua item reward
     // (tapi karena udh pakai <include>, kita override datanya di sini)
-    private void setupRewardItems() {
-        View itemLast = findViewById(R.id.item_last_reward);
-        View item1 = findViewById(R.id.item_reward_1);
-        View item2 = findViewById(R.id.item_reward_2);
-        View item3 = findViewById(R.id.item_reward_3);
+    private fun setupRewardItems() {
+        val itemLast = findViewById<View?>(R.id.item_last_reward)
+        val item1 = findViewById<View?>(R.id.item_reward_1)
+        val item2 = findViewById<View?>(R.id.item_reward_2)
+        val item3 = findViewById<View?>(R.id.item_reward_3)
 
-        View[] itemViews = {itemLast, item1, item2, item3};
+        val itemViews = arrayOf<View>(itemLast!!, item1!!, item2!!, item3!!)
 
-        ApiClient.getService().getReward().enqueue(new Callback<List<RewardResponse>>() {
-            @Override
-            public void onResponse(Call<List<RewardResponse>> call, Response<List<RewardResponse>> response) {
+        service.reward!!.enqueue(object : Callback<MutableList<RewardResponse?>?> {
+            override fun onResponse(
+                call: Call<MutableList<RewardResponse?>?>,
+                response: Response<MutableList<RewardResponse?>?>
+            ) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<RewardResponse> list = response.body();
+                    val list: List<RewardResponse> = response.body()!!.filterNotNull()
 
-                    for (int i = 0; i < Math.min(list.size(), itemViews.length); i++) {
-                        RewardResponse reward = list.get(i);
-                        View itemView = itemViews[i];
+                    for (i in 0..<min(list.size, itemViews.size)) {
+                        val reward = list.get(i)
+                        val itemView = itemViews[i]
 
-                        ((TextView) itemView.findViewById(R.id.tv_reward_name)).setText(reward.getNamaReward());
-                        ((TextView) itemView.findViewById(R.id.tv_reward_desc)).setText(reward.getDeskripsi());
-                        ((TextView) itemView.findViewById(R.id.tv_reward_points)).setText(reward.getPoinDibutuhkan() + " Poin");
+                        (itemView.findViewById<View?>(R.id.tv_reward_name) as TextView).setText(
+                            reward.namaReward
+                        )
+                        (itemView.findViewById<View?>(R.id.tv_reward_desc) as TextView).setText(
+                            reward.deskripsi
+                        )
+                        (itemView.findViewById<View?>(R.id.tv_reward_points) as TextView).setText(
+                            reward.poinDibutuhkan.toString() + " Poin"
+                        )
 
-                        int resId = getResources().getIdentifier(reward.getLogoResourceName(), "drawable", getPackageName());
+                        val resId = getResources().getIdentifier(
+                            reward.logoResourceName,
+                            "drawable",
+                            getPackageName()
+                        )
                         if (resId != 0) {
-                            ((ImageView) itemView.findViewById(R.id.iv_reward_logo)).setImageResource(resId);
+                            (itemView.findViewById<View?>(R.id.iv_reward_logo) as ImageView).setImageResource(
+                                resId
+                            )
                         }
 
-                        if (reward.getLogoResourceName().contains("gopay")) {
-                            itemView.findViewById(R.id.btn_tukar).setOnClickListener(v -> bukaGopay());
+                        if (reward.logoResourceName?.contains("gopay") == true) {
+                            itemView.findViewById<View?>(R.id.btn_tukar)
+                                .setOnClickListener(View.OnClickListener { v: View? -> bukaGopay() })
                         }
                     }
                 }
             }
 
-            @Override
-            public void onFailure(Call<List<RewardResponse>> call, Throwable t) {}
-        });
+            override fun onFailure(call: Call<MutableList<RewardResponse?>?>, t: Throwable) {}
+        })
     }
 
     /*
@@ -134,41 +141,47 @@ public class RewardActivity extends AppCompatActivity implements View.OnClickLis
      * "aplikasi" padahal cuma websitenya saja
      * kalau terinstall ya, akan langsung kebuka app-nya.
      */
-    private void bukaGopay() {
+    private fun bukaGopay() {
         // coba buka app GoPay langsung via deep link (kalau ada)
-        Intent intent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("gojek://gopay"));
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("gojek://gopay")
+        )
 
         // cek apa ada app yang bisa handle intent ini
         if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent); // maka buka app GoPay
+            startActivity(intent) // maka buka app GoPay
         } else {
             // fallback: buka browser ke website GoPay
-            Intent browser = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://gopay.co.id"));
-            startActivity(browser);
+            val browser = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://gopay.co.id")
+            )
+            startActivity(browser)
         }
     }
 
-    private void setActiveNav() {
-        setNavColor(R.id.nav_home, R.color.gray_text, Typeface.NORMAL);
-        setNavColor(R.id.nav_reward, R.color.green_primary, Typeface.BOLD);
-        setNavColor(R.id.nav_statistik, R.color.gray_text, Typeface.NORMAL);
-        setNavColor(R.id.nav_profil, R.color.gray_text, Typeface.NORMAL);
+    private fun setActiveNav() {
+        setNavColor(R.id.nav_home, R.color.gray_text, Typeface.NORMAL)
+        setNavColor(R.id.nav_reward, R.color.green_primary, Typeface.BOLD)
+        setNavColor(R.id.nav_statistik, R.color.gray_text, Typeface.NORMAL)
+        setNavColor(R.id.nav_profil, R.color.gray_text, Typeface.NORMAL)
     }
 
-    private void setNavColor(int navId, int colorRes, int typefaceStyle) {
-        LinearLayout tab = findViewById(navId);
-        if (tab == null) return;
-        for (int i = 0; i < tab.getChildCount(); i++) {
-            View child = tab.getChildAt(i);
-            if (child instanceof ImageView) {
-                ((ImageView) child).setColorFilter(
-                        getResources().getColor(colorRes, getTheme()));
-            } else if (child instanceof TextView) {
-                ((TextView) child).setTextColor(
-                        getResources().getColor(colorRes, getTheme()));
-                ((TextView) child).setTypeface(null, typefaceStyle);
+    private fun setNavColor(navId: Int, colorRes: Int, typefaceStyle: Int) {
+        val tab = findViewById<LinearLayout?>(navId)
+        if (tab == null) return
+        for (i in 0..<tab.getChildCount()) {
+            val child = tab.getChildAt(i)
+            if (child is ImageView) {
+                child.setColorFilter(
+                    getResources().getColor(colorRes, getTheme())
+                )
+            } else if (child is TextView) {
+                child.setTextColor(
+                    getResources().getColor(colorRes, getTheme())
+                )
+                child.setTypeface(null, typefaceStyle)
             }
         }
     }

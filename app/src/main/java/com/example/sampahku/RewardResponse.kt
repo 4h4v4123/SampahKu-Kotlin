@@ -1,14 +1,17 @@
-package com.example.sampahku;
-import com.google.gson.annotations.SerializedName;
+package com.example.sampahku
 
-public class RewardResponse {
-    @SerializedName("nama_reward") private String namaReward;
-    @SerializedName("deskripsi") private String deskripsi;
-    @SerializedName("poin_dibutuhkan") private int poinDibutuhkan;
-    @SerializedName("logo_resource_name") private String logoResourceName;
+import com.google.gson.annotations.SerializedName
 
-    public String getNamaReward() { return namaReward; }
-    public String getDeskripsi() { return deskripsi; }
-    public int getPoinDibutuhkan() { return poinDibutuhkan; }
-    public String getLogoResourceName() { return logoResourceName; }
+class RewardResponse {
+    @SerializedName("nama_reward")
+    val namaReward: String? = null
+
+    @SerializedName("deskripsi")
+    val deskripsi: String? = null
+
+    @SerializedName("poin_dibutuhkan")
+    val poinDibutuhkan: Int = 0
+
+    @SerializedName("logo_resource_name")
+    val logoResourceName: String? = null
 }

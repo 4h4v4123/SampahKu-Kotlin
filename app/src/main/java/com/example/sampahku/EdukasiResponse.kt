@@ -1,12 +1,17 @@
-package com.example.sampahku;
-import com.google.gson.annotations.SerializedName;
+package com.example.sampahku
 
-public class EdukasiResponse {
-    @SerializedName("video_id_youtube") private String videoIdYoutube;
-    @SerializedName("judul") private String judul;
-    @SerializedName("deskripsi") private String deskripsi;
+import com.google.gson.annotations.SerializedName
 
-    public String getVideoIdYoutube() { return videoIdYoutube; }
-    public String getJudul() { return judul; }
-    public String getDeskripsi() { return deskripsi; }
+class EdukasiResponse {
+    @JvmField
+    @SerializedName("video_id_youtube")
+    val videoIdYoutube: String? = null
+
+    @JvmField
+    @SerializedName("judul")
+    val judul: String? = null
+
+    @JvmField
+    @SerializedName("deskripsi")
+    val deskripsi: String? = null
 }

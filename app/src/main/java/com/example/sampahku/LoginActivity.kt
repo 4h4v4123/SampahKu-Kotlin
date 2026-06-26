@@ -1,169 +1,189 @@
 // Hallo, jeg heter herr x og jeg kommer fra Indonesia
-package com.example.sampahku;
+package com.example.sampahku
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import android.content.SharedPreferences;
-import android.content.Context;
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.text.TextUtils
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.sampahku.ApiClient.service
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-import android.net.Uri; // untuk bagian implicit intentnya
+// untuk bagian implicit intentnya
+class LoginActivity : AppCompatActivity(), View.OnClickListener {
+    private var editEmail: EditText? = null
+    private var editPassword: EditText? = null
+    private var btnLogin: Button? = null
+    private var tvFgtPassword: TextView? = null
+    private var tvRegister: TextView? = null
+    private var ivTogglePassword: ImageView? = null
+    private var ivGoogle: ImageView? = null
+    private var ivApple: ImageView? = null
 
-import androidx.appcompat.app.AppCompatActivity;
+    private var isPasswordVisible = false
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private static final String VALID_EMAIL = "rakha@user.com";
-    private static final String VALID_PASSWORD = "user123";
-
-    private EditText editEmail;
-    private EditText editPassword;
-    private Button btnLogin;
-    private TextView tvFgtPassword;
-    private TextView tvRegister;
-    private ImageView ivTogglePassword;
-    private ImageView ivGoogle;
-    private ImageView ivApple;
-
-    private boolean isPasswordVisible = false;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
 
         // hide action bar ketika sudah masuk aplikasi
         // agar rapi
         if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
+            getSupportActionBar()!!.hide()
         }
 
         // inisialisasi view-view yang ada
-        editEmail = findViewById(R.id.edt_email);
-        editPassword = findViewById(R.id.edt_password);
-        btnLogin = findViewById(R.id.btn_login);
-        tvFgtPassword = findViewById(R.id.tv_forgot_password);
-        tvRegister = findViewById(R.id.tv_register);
-        ivTogglePassword = findViewById(R.id.iv_toggle_password);
-        ivGoogle = findViewById(R.id.iv_google);
-        ivApple = findViewById(R.id.iv_apple);
+        editEmail = findViewById<EditText>(R.id.edt_email)
+        editPassword = findViewById<EditText>(R.id.edt_password)
+        btnLogin = findViewById<Button>(R.id.btn_login)
+        tvFgtPassword = findViewById<TextView>(R.id.tv_forgot_password)
+        tvRegister = findViewById<TextView>(R.id.tv_register)
+        ivTogglePassword = findViewById<ImageView>(R.id.iv_toggle_password)
+        ivGoogle = findViewById<ImageView>(R.id.iv_google)
+        ivApple = findViewById<ImageView>(R.id.iv_apple)
 
         // set listener, menggunakan 'setOnClickListener'
-        btnLogin.setOnClickListener(this);
-        tvFgtPassword.setOnClickListener(this);
-        tvRegister.setOnClickListener(this);
-        ivTogglePassword.setOnClickListener(this);
-        ivGoogle.setOnClickListener(this);
-        ivApple.setOnClickListener(this);
+        btnLogin!!.setOnClickListener(this)
+        tvFgtPassword!!.setOnClickListener(this)
+        tvRegister!!.setOnClickListener(this)
+        ivTogglePassword!!.setOnClickListener(this)
+        ivGoogle!!.setOnClickListener(this)
+        ivApple!!.setOnClickListener(this)
     }
 
-    @Override
-    public void onClick(View v) {
+    override fun onClick(v: View) {
         if (v.getId() == R.id.btn_login) {
-            handleLogin();
+            handleLogin()
         } else if (v.getId() == R.id.iv_google) {
             // IMPLICIT INTENT UNTUK GOOGLE DAN APPLE ID BABAYYY
-            Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://accounts.google.com/signin"));
-            startActivity(intent);
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://accounts.google.com/signin")
+            )
+            startActivity(intent)
         } else if (v.getId() == R.id.iv_apple) {
-            Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://appleid.apple.com/sign-in"));
-            startActivity(intent);
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://appleid.apple.com/sign-in")
+            )
+            startActivity(intent)
         } else if (v.getId() == R.id.tv_forgot_password) {
-            Toast.makeText(this, getString(R.string.coming_soon), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.coming_soon), Toast.LENGTH_SHORT).show()
         } else if (v.getId() == R.id.tv_register) {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
+            val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
+            startActivity(intent)
         } else if (v.getId() == R.id.iv_toggle_password) {
-            togglePasswordVisibility();
+            togglePasswordVisibility()
         }
     }
 
     // untuk menangani proses login
     // validasi input juga
-    private void handleLogin() {
-        String email = editEmail.getText().toString().trim();
-        String password = editPassword.getText().toString().trim();
+    private fun handleLogin() {
+        val email = editEmail!!.getText().toString().trim { it <= ' ' }
+        val password = editPassword!!.getText().toString().trim { it <= ' ' }
 
-        boolean isEmptyFields = false;
+        var isEmptyFields = false
         if (TextUtils.isEmpty(email)) {
-            isEmptyFields = true;
-            editEmail.setError(getString(R.string.error_email_empty));
+            isEmptyFields = true
+            editEmail!!.setError(getString(R.string.error_email_empty))
         }
         if (TextUtils.isEmpty(password)) {
-            isEmptyFields = true;
-            editPassword.setError(getString(R.string.error_password_empty));
+            isEmptyFields = true
+            editPassword!!.setError(getString(R.string.error_password_empty))
         }
 
         if (!isEmptyFields) {
-            Toast.makeText(this, "Mencoba masuk...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Mencoba masuk...", Toast.LENGTH_SHORT).show()
 
             // Mengirim request ke Django
-            ApiClient.getService().loginUser(email, password).enqueue(new Callback<LoginResponse>() {
-                @Override
-                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            service.loginUser(email, password)!!.enqueue(object : Callback<LoginResponse?> {
+                override fun onResponse(
+                    call: Call<LoginResponse?>,
+                    response: Response<LoginResponse?>
+                ) {
                     // Mengecek apakah server membalas
                     if (response.isSuccessful() && response.body() != null) {
                         // Mengecek apakah status JSON dari Django adalah "success"
-                        if ("success".equals(response.body().getStatus())) {
-                            Toast.makeText(LoginActivity.this, "Selamat datang, " + response.body().getNama(), Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                        if ("success" == response.body()!!.status) {
+                            Toast.makeText(
+                                this@LoginActivity, "Selamat datang, " + response.body()!!
+                                    .nama, Toast.LENGTH_SHORT
+                            ).show()
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
                         } else {
-                            Toast.makeText(LoginActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(
+                                this@LoginActivity,
+                                response.body()!!.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     } else {
-                        Toast.makeText(LoginActivity.this, "Email atau password salah!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Email atau password salah!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
-                    if ("success".equals(response.body().getStatus())) {
-
-                        SharedPreferences sharedPref = getSharedPreferences("SampahkuPrefs", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putInt("USER_ID", response.body().getUserId());
-                        editor.apply();
+                    if ("success" == response.body()!!.status) {
+                        val sharedPref = getSharedPreferences("SampahkuPrefs", MODE_PRIVATE)
+                        val editor = sharedPref.edit()
+                        editor.putInt("USER_ID", response.body()!!.userId)
+                        editor.apply()
                         // ---------------------------------------------
-                        Toast.makeText(LoginActivity.this, "Selamat datang, " + response.body().getNama(), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Selamat datang, " + response.body()!!.nama,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
                     }
                 }
 
-                @Override
-                public void onFailure(Call<LoginResponse> call, Throwable t) {
+                override fun onFailure(call: Call<LoginResponse?>, t: Throwable) {
                     // Akan masuk ke sini jika server mati atau internet tidak ada
-                    Toast.makeText(LoginActivity.this, "Koneksi ke server gagal: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Koneksi ke server gagal: " + t.message,
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
-            });
+            })
         }
     }
 
     // toggle password on/off
     // implementasinya sama di halaman register
-    private void togglePasswordVisibility() {
+    private fun togglePasswordVisibility() {
         if (isPasswordVisible) {
-            editPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            ivTogglePassword.setImageResource(R.drawable.ic_eye_off);
-            isPasswordVisible = false;
+            editPassword!!.setTransformationMethod(PasswordTransformationMethod.getInstance())
+            ivTogglePassword!!.setImageResource(R.drawable.ic_eye_off)
+            isPasswordVisible = false
         } else {
-            editPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            ivTogglePassword.setImageResource(R.drawable.ic_eye_on);
-            isPasswordVisible = true;
+            editPassword!!.setTransformationMethod(HideReturnsTransformationMethod.getInstance())
+            ivTogglePassword!!.setImageResource(R.drawable.ic_eye_on)
+            isPasswordVisible = true
         }
-        editPassword.setSelection(editPassword.getText().length());
+        editPassword!!.setSelection(editPassword!!.getText().length)
+    }
+
+    companion object {
+        private const val VALID_EMAIL = "rakha@user.com"
+        private const val VALID_PASSWORD = "user123"
     }
 }

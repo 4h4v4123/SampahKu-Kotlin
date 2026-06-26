@@ -1,14 +1,21 @@
-package com.example.sampahku;
-import com.google.gson.annotations.SerializedName;
+package com.example.sampahku
 
-public class RiwayatResponse {
-    @SerializedName("nama_sampah") private String namaSampah;
-    @SerializedName("berat") private double berat;
-    @SerializedName("poin_didapat") private int poinDidapat;
-    @SerializedName("tanggal_lokasi") private String tanggalLokasi;
+import com.google.gson.annotations.SerializedName
 
-    public String getNamaSampah() { return namaSampah; }
-    public double getBerat() { return berat; }
-    public int getPoinDidapat() { return poinDidapat; }
-    public String getTanggalLokasi() { return tanggalLokasi; }
+class RiwayatResponse {
+    @JvmField
+    @SerializedName("nama_sampah")
+    val namaSampah: String? = null
+
+    @JvmField
+    @SerializedName("berat")
+    val berat: Double = 0.0
+
+    @JvmField
+    @SerializedName("poin_didapat")
+    val poinDidapat: Int = 0
+
+    @JvmField
+    @SerializedName("tanggal_lokasi")
+    val tanggalLokasi: String? = null
 }

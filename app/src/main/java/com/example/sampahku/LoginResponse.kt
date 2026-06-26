@@ -1,22 +1,17 @@
-package com.example.sampahku;
+package com.example.sampahku
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
-public class LoginResponse {
+class LoginResponse {
     @SerializedName("status")
-    private String status;
+    val status: String? = null
 
     @SerializedName("message")
-    private String message;
+    val message: String? = null
 
     @SerializedName("user_id")
-    private int userId;
+    val userId: Int = 0
 
     @SerializedName("nama")
-    private String nama;
-
-    public String getStatus() { return status; }
-    public String getMessage() { return message; }
-    public int getUserId() { return userId; }
-    public String getNama() { return nama; }
+    val nama: String? = null
 }

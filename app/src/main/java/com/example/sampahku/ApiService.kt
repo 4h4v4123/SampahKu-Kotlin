@@ -1,63 +1,57 @@
-package com.example.sampahku;
+package com.example.sampahku
 
-import java.util.List;
-import retrofit2.Call;
-import retrofit2.http.DELETE;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
-import retrofit2.http.PATCH;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
+import retrofit2.Call
+import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
+import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.Path
 
-public interface ApiService {
+interface ApiService {
     @FormUrlEncoded
     @POST("api/login/")
-    Call<LoginResponse> loginUser(
-            @Field("email") String email,
-            @Field("password") String password
-    );
+    fun loginUser(
+        @Field("email") email: String?,
+        @Field("password") password: String?
+    ): Call<LoginResponse?>?
 
     // Mendaftarkan user baru (Register)
     @FormUrlEncoded
     @POST("api/pengguna/")
-    Call<ProfilResponse> registerUser(
-            @Field("nama") String nama,
-            @Field("email") String email,
-            @Field("password") String password,
-            @Field("no_telepon") String noTelepon,
-            @Field("alamat") String alamat,
-            @Field("total_poin") int totalPoin
-    );
+    fun registerUser(
+        @Field("nama") nama: String?,
+        @Field("email") email: String?,
+        @Field("password") password: String?,
+        @Field("no_telepon") noTelepon: String?,
+        @Field("alamat") alamat: String?,
+        @Field("total_poin") totalPoin: Int
+    ): Call<ProfilResponse?>?
 
     @GET("api/pengguna/{id}/")
-    Call<ProfilResponse> getProfil(@Path("id") int id);
+    fun getProfil(@Path("id") id: Int): Call<ProfilResponse?>?
 
     // Menghapus akun secara permanen
     @DELETE("api/pengguna/{id}/")
-    Call<Void> hapusProfil(@Path("id") int id);
+    fun hapusProfil(@Path("id") id: Int): Call<Void?>?
 
-    // Mengambil daftar riwayat (menghasilkan List/Array)
-    @GET("api/riwayat/")
-    Call<List<RiwayatResponse>> getRiwayat();
+    @get:GET("api/riwayat/")
+    val riwayat: Call<MutableList<RiwayatResponse?>?>?
 
-    // Mengambil daftar video edukasi
-    @GET("api/edukasi/")
-    Call<List<EdukasiResponse>> getEdukasi();
+    @get:GET("api/edukasi/")
+    val edukasi: Call<MutableList<EdukasiResponse?>?>?
 
-    // Mengambil daftar reward
-    @GET("api/reward/")
-    Call<List<RewardResponse>> getReward();
+    @get:GET("api/reward/")
+    val reward: Call<MutableList<RewardResponse?>?>?
 
     // Mengubah data profil secara spesifik menggunakan PATCH
     @FormUrlEncoded
     @PATCH("api/pengguna/{id}/")
-    Call<ProfilResponse> updateProfil(
-            @Path("id") int id,          // ID pengguna yang ingin diubah
-            @Field("nama") String nama,
-            @Field("no_telepon") String noTelepon,
-            @Field("alamat") String alamat
-    );
-
-
+    fun updateProfil(
+        @Path("id") id: Int,  // ID pengguna yang ingin diubah
+        @Field("nama") nama: String?,
+        @Field("no_telepon") noTelepon: String?,
+        @Field("alamat") alamat: String?
+    ): Call<ProfilResponse?>?
 }
