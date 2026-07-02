@@ -8,19 +8,22 @@ import android.net.NetworkCapabilities
 import android.os.Build
 
 /**
- * Broadcast Receiver untuk menangani berbagai event sistem Android.
- * Mengimplementasikan deteksi baterai, pengisian daya, mode pesawat, dan koneksi internet.
+ * jadiiiiiiiiii, file ini utk apa? Ini file utk broadcast receiver yg dipakai
+ * untuk menangani berbagai event sistem dari OS Android.
+ * [INDIKATOR UAS, BONUS SCORE] Menunjukkan kemampuan aplikasi merespon sinyal sistem secara otomatis (Notifikasi).
  */
 class SystemReceiver : BroadcastReceiver() {
 
+    /**
+     * onReceive, ini akan kepanggil otomatis saat Android mengirimkan broadcast yang sesuai dengan filter.
+     */
     override fun onReceive(context: Context, intent: Intent) {
-        // [INDIKATOR] Fungsi ini akan terpanggil otomatis saat sistem Android mengirimkan sinyal/broadcast
-        
-        // Inisialisasi channel notifikasi jika belum ada
+        // pastikan channel notifikasi siap digunakan
         NotificationHelper.createNotificationChannel(context)
 
+        // BTW semua teks-teksnya ada di file string
         when (intent.action) {
-            // [IMPLEMENTASI IDE 2] Mendeteksi saat baterai HP berada di level rendah (biasanya < 15%)
+            // [IMPLEMENTASI IDE 2] akan deteksi kalau baterai HP berada di level rendah (biasanya < 15-20%)
             Intent.ACTION_BATTERY_LOW -> {
                 NotificationHelper.sendNotification(
                     context,
@@ -30,7 +33,9 @@ class SystemReceiver : BroadcastReceiver() {
                 )
             }
 
-            // [IMPLEMENTASI IDE 4] Mendeteksi saat HP mulai dihubungkan ke pengisi daya (charger)
+            // [IMPLEMENTASI IDE 4] deteksi kalau HP mulai dihubungkan ke charger
+            // ALSO BAHASA HELP, tulisnya cas atau charge
+            // cas aja lah >.<
             Intent.ACTION_POWER_CONNECTED -> {
                 NotificationHelper.sendNotification(
                     context,
@@ -40,7 +45,7 @@ class SystemReceiver : BroadcastReceiver() {
                 )
             }
 
-            // [IMPLEMENTASI IDE 6] Mendeteksi saat mode pesawat dinyalakan atau dimatikan
+            // [IMPLEMENTASI IDE 6] deteksi di saat mode pesawat (airplane mode) dinyalakan atau dimatikan oleh user
             Intent.ACTION_AIRPLANE_MODE_CHANGED -> {
                 NotificationHelper.sendNotification(
                     context,
@@ -50,10 +55,11 @@ class SystemReceiver : BroadcastReceiver() {
                 )
             }
 
-            // [IMPLEMENTASI IDE 3] Mendeteksi perubahan koneksi internet (WiFi atau Data Seluler)
+            // [IMPLEMENTASI IDE 3] deteksi ada perubahan status internet (Online/Offline) secara real-time
+            // (couldve been the airplane mode too but whatever...
+            // extra work but homestly I couldnt care less
             ConnectivityManager.CONNECTIVITY_ACTION -> {
                 if (isOnline(context)) {
-                    // Muncul jika internet kembali tersambung
                     NotificationHelper.sendNotification(
                         context,
                         context.getString(R.string.notif_network_online_title),
@@ -61,7 +67,6 @@ class SystemReceiver : BroadcastReceiver() {
                         104
                     )
                 } else {
-                    // Muncul jika internet terputus
                     NotificationHelper.sendNotification(
                         context,
                         context.getString(R.string.notif_network_offline_title),
@@ -74,7 +79,7 @@ class SystemReceiver : BroadcastReceiver() {
     }
 
     /**
-     * Fungsi pembantu untuk mengecek apakah perangkat sedang online
+     * isOnline, sebuah helper utk mengecek status koneksi perangkat ke internet.
      */
     private fun isOnline(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
