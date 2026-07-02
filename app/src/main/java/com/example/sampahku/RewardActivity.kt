@@ -29,7 +29,7 @@ class RewardActivity : AppCompatActivity(), View.OnClickListener {
     private val PREFS_NAME = "RewardPrefs"
     private val KEY_VIEW_TYPE = "view_type"
 
-    // list navbar isinya
+    // list navbar isinya blabla
     private var navHome: LinearLayout? = null
     private var navReward: LinearLayout? = null
     private var navQr: View? = null
@@ -52,16 +52,16 @@ class RewardActivity : AppCompatActivity(), View.OnClickListener {
 
         rvRewards = findViewById(R.id.rv_rewards)
 
-        // Load saved view type
+        // mengeload saved view type
         val savedViewType = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .getInt(KEY_VIEW_TYPE, RewardAdapter.VIEW_TYPE_LIST)
 
         updateToggleIcon(savedViewType)
 
-        // Setup RecyclerView with saved view type
+        // setup RecyclerView pakai saved view type
         setupRecyclerView(savedViewType)
 
-        // inisialisasi bottom navigation bar
+        // inisialisasi navbarnya
         navHome = findViewById(R.id.nav_home)
         navReward = findViewById(R.id.nav_reward)
         navQr = findViewById(R.id.nav_qr)
@@ -103,7 +103,7 @@ class RewardActivity : AppCompatActivity(), View.OnClickListener {
             else -> RewardAdapter.VIEW_TYPE_LIST
         }
 
-        // Save new view type
+        // save new view type
         getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putInt(KEY_VIEW_TYPE, nextViewType)
