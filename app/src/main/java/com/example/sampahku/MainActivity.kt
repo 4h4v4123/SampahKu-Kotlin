@@ -30,16 +30,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var navProfil: LinearLayout? = null
     private var tblTukarPoin: View? = null
 
-    // Broadcast Receiver
+    // ini dia broadcast recievernya ya gaiss
     private val systemReceiver = SystemReceiver()
 
-    // Education RecyclerView components
+    // komponen2 recyclerview di bagian edukasi
     private var rvEdukasi: RecyclerView? = null
     private var edukasiAdapter: EdukasiAdapter? = null
     private var ivEdukasiToggle: ImageView? = null
     private var edukasiList: MutableList<EdukasiResponse> = mutableListOf()
 
-    // Preferences keys
+    // preferences keys
     private val PREFS_NAME = "HomePrefs"
     private val KEY_EDUKASI_VIEW_TYPE = "edukasi_view_type"
 
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Inisialisasi Channel Notifikasi
+        // inisialisasi channel notifikasinya
         NotificationHelper.createNotificationChannel(this)
         requestNotificationPermission()
 
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val ivNotif = findViewById<ImageView>(R.id.iv_notif)
         tblTukarPoin = findViewById(R.id.btn_tukar_poin)
 
-        // Education toggle and RV
+        // toggle
         ivEdukasiToggle = findViewById(R.id.iv_edukasi_toggle)
         rvEdukasi = findViewById(R.id.rv_edukasi)
 
@@ -80,7 +80,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             startActivity(Intent(this@MainActivity, ProfilActivity::class.java))
         }
 
-        // Fitur Tambahan: Klik ikon lonceng untuk test notifikasi (IDE 1)
+        // fitur tambahan, silakan klik ikon "lonceng" buat tes notifikasi. Aslinya namanya masih placeholder
+        // but oh well ALKCNAKDJA
         ivNotif.setOnClickListener {
             NotificationHelper.sendNotification(
                 this,
@@ -89,7 +90,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             )
         }
 
-        // Load saved view type for education
+        // ini utk save view type di edukasi. Misal kalau kita pindah halaman di view grid, pas balik masih
+        // di grid.
         val savedViewType = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .getInt(KEY_EDUKASI_VIEW_TYPE, EdukasiAdapter.VIEW_TYPE_LIST)
 
@@ -102,7 +104,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     /**
-     * Mendaftarkan Broadcast Receiver secara dinamis saat Activity aktif
+     * daftarkan broadcast reciever saat activity aktif, DYNAMICALLY
      */
     override fun onStart() {
         super.onStart()
@@ -115,7 +117,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     /**
-     * Melepaskan Broadcast Receiver saat Activity tidak terlihat untuk menghemat baterai
+     * LEPASKAN Broadcast Receiver saat Activity gk terlihat utk menghemat baterai
+     * harga baterai mahal >.<
      */
     override fun onStop() {
         super.onStop()
@@ -123,7 +126,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     /**
-     * Meminta izin notifikasi untuk Android 13+
+     * minta izin notifikasi untuk Android 13+
      */
     private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -156,7 +159,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             else -> EdukasiAdapter.VIEW_TYPE_LIST
         }
 
-        // Save new view type
+        // save new view type
         getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putInt(KEY_EDUKASI_VIEW_TYPE, nextViewType)
@@ -164,11 +167,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         updateEdukasiToggleIcon(nextViewType)
 
-        // Update layout manager span count
+        // mengupdate layout manager span count
         val spanCount = if (nextViewType == EdukasiAdapter.VIEW_TYPE_GRID) 2 else 1
         (rvEdukasi!!.layoutManager as GridLayoutManager).spanCount = spanCount
         
-        // Update adapter view type
+        // update adapter view type
         edukasiAdapter?.updateViewType(nextViewType)
     }
 
