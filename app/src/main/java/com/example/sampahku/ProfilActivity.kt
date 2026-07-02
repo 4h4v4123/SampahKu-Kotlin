@@ -20,6 +20,7 @@ import retrofit2.Response
 
 class ProfilActivity : AppCompatActivity(), View.OnClickListener {
     // ini adalah navbar, navbar punya home, reward, qr, statistik, profil
+    // dan navbar adalah temanmu :>
     private var navHome: LinearLayout? = null
     private var navReward: LinearLayout? = null
     private var navQr: View? = null
@@ -27,13 +28,13 @@ class ProfilActivity : AppCompatActivity(), View.OnClickListener {
     private var navProfil: LinearLayout? = null
 
     private fun tampilkanDialogEdit() {
-        // 1. Memanggil layout XML yang baru kita buat
+        // 1. panggil layout XML yang baru kita buat
         val dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_profil, null)
         val etNama = dialogView.findViewById<EditText>(R.id.et_edit_nama)
         val etTelepon = dialogView.findViewById<EditText>(R.id.et_edit_telepon)
         val etAlamat = dialogView.findViewById<EditText>(R.id.et_edit_alamat)
 
-        // 2. Mengambil teks yang sedang tampil di layar untuk dijadikan teks awal (supaya user tidak mengetik dari nol)
+        // 2. ambil teks yang sedang tampil di layar untuk dijadikan teks awal (supaya user tidak mengetik dari nol)
         val itemNama = findViewById<View>(R.id.item_nama_pengguna)
         val itemTelepon = findViewById<View>(R.id.item_telepon)
         val itemAlamat = findViewById<View>(R.id.item_alamat)
@@ -48,7 +49,7 @@ class ProfilActivity : AppCompatActivity(), View.OnClickListener {
             (itemAlamat.findViewById<View?>(R.id.tv_value) as TextView).getText().toString()
         )
 
-        // 3. Membuat Pop-up Dialog
+        // 3. buat dialog pop-up
         val builder = AlertDialog.Builder(this)
         builder.setView(dialogView)
         builder.setPositiveButton("Simpan", object : DialogInterface.OnClickListener {
@@ -75,7 +76,7 @@ class ProfilActivity : AppCompatActivity(), View.OnClickListener {
 
         Toast.makeText(this, "Menyimpan...", Toast.LENGTH_SHORT).show()
 
-        // Memanggil API PATCH yang kita buat di ApiService
+        // panggil API PATCH yang sdh dibuat di ApiService
         service.updateProfil(currentUserId, nama, telepon, alamat)!!
             .enqueue(object : Callback<ProfilResponse?> {
                 override fun onResponse(
@@ -88,7 +89,7 @@ class ProfilActivity : AppCompatActivity(), View.OnClickListener {
                             "Berhasil diperbarui!",
                             Toast.LENGTH_SHORT
                         ).show()
-                        // Segarkan ulang data di layar dengan memanggil method setupProfilData() Anda lagi
+                        // refresh ulang data di layar dengan memanggil method setupProfilData() Anda lagi
                         setupProfilData()
 
                         // Opsional: Update nama di header (tulisan Rakha Atha Muhammad)
@@ -244,6 +245,7 @@ class ProfilActivity : AppCompatActivity(), View.OnClickListener {
         service.hapusProfil(currentUserId)!!.enqueue(object : Callback<Void?> {
             override fun onResponse(call: Call<Void?>, response: Response<Void?>) {
                 // Di Retrofit, response 204 (No Content) dihitung sebagai isSuccessful()
+                // N.B ini deo dan saya tidak mengerti ini artinya apa tapi YEAAAHHH GO MIKELLL!!!
                 if (response.isSuccessful()) {
                     Toast.makeText(
                         this@ProfilActivity,
@@ -300,7 +302,7 @@ class ProfilActivity : AppCompatActivity(), View.OnClickListener {
         val menuHapus = findViewById<RelativeLayout>(R.id.menu_privasi)
         menuHapus.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                // Jangan langsung hapus! Tampilkan konfirmasi peringatan dulu
+                // Jangan langsung hapus gasi, Tampilkan konfirmasi peringatan dulu
                 konfirmasiHapusAkun()
             }
         })
